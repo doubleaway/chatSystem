@@ -13501,7 +13501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questId: 10
-  questActionIndex: 1
+  questActionIndex: 0
   questObject:
   - {fileID: 1307855979}
 --- !u!4 &1059208443
