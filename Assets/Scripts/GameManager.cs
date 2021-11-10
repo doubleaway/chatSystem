@@ -5,20 +5,22 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public Text talkText;
+
     public GameObject scanObject;
-    public GameObject talkPanel;
+    public Animator talkPanel;
     public bool isAction;
     public talkManager TalkManager;
     public int talkIndex;
     //초상화
     public Image portaitImg;
-
+    public Animator portaitAnim;
+    public Sprite prevPortrait;
     //퀘스트관련
     public QuestManager questManager;
+    //텍스트 관련
+    public TypeEffect talk;
 
-
-     void Start()
+    void Start()
     {
         Debug.Log(questManager.CheckQuest());
     }
@@ -27,8 +29,8 @@ public class GameManager : MonoBehaviour
             scanObject = scanObj;
             objData objData = scanObject.GetComponent<objData>();
             Talk(objData.id, objData.npc);
-      
-        talkPanel.SetActive(isAction);
+
+        talkPanel.SetBool("IsShow", isAction);
     }
  
     // Update is called once per frame
@@ -38,9 +40,18 @@ public class GameManager : MonoBehaviour
     }
     void Talk(int id,bool isNpc)
     {
-        
-        int questTalkIndex = questManager.GetQuestTalkIndex(id);
-        string talkData=TalkManager.GetTalk(id+questTalkIndex, talkIndex);
+        int questTalkIndex = 0;
+        string talkData = "";
+        if (talk.isAnim)
+        {
+            talk.SetMsg("");
+            return;
+        }
+        else
+        {
+             questTalkIndex = questManager.GetQuestTalkIndex(id);
+             talkData = TalkManager.GetTalk(id + questTalkIndex, talkIndex);
+        }
         //end talk
         if (talkData == null)
         {
@@ -51,16 +62,25 @@ public class GameManager : MonoBehaviour
         }
         if (isNpc) {
          
-            talkText.text = talkData.Split(':')[0];
+            talk.SetMsg(talkData.Split(':')[0]);
 
             portaitImg.sprite = TalkManager.GetPortrait(id,int.Parse(talkData.Split(':')[1]));
 
+          
             portaitImg.color = new Color(1, 1, 1, 1);
+            if (prevPortrait != portaitImg.sprite)
+            {
+                portaitAnim.SetTrigger("doEffect");
+                prevPortrait = portaitImg.sprite;
+            }
+               
+
         }
         else {
            
-            talkText.text = talkData;
+            talk.SetMsg (talkData);
             portaitImg.color = new Color(1, 1, 1, 0);
+
         }
         isAction = true;
         talkIndex++;
