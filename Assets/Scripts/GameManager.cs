@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public bool isAction;
     public talkManager TalkManager;
     public int talkIndex;
+    public GameObject menuSet;
     //초상화
     public Image portaitImg;
     public Animator portaitAnim;
@@ -19,10 +20,28 @@ public class GameManager : MonoBehaviour
     public QuestManager questManager;
     //텍스트 관련
     public TypeEffect talk;
+    public Text questTalk;
 
     void Start()
     {
-        Debug.Log(questManager.CheckQuest());
+        questTalk.text = questManager.CheckQuest();
+    }
+
+    void Update()
+    {
+        //subMenu
+        if (Input.GetButtonDown("Cancel"))
+        {
+            if (menuSet.activeSelf)
+                menuSet.SetActive(false);
+            else
+                menuSet.SetActive(true);
+
+        }
+        
+          
+        if (Input.GetButtonDown("Cancel"))
+            menuSet.SetActive(true);
     }
     public void Action(GameObject scanObj)
     {
@@ -33,11 +52,7 @@ public class GameManager : MonoBehaviour
         talkPanel.SetBool("IsShow", isAction);
     }
  
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
     void Talk(int id,bool isNpc)
     {
         int questTalkIndex = 0;
@@ -57,7 +72,7 @@ public class GameManager : MonoBehaviour
         {
             isAction = false;
             talkIndex = 0;
-            Debug.Log(questManager.CheckQuest(id));
+            questTalk.text = questManager.CheckQuest(id);
             return;
         }
         if (isNpc) {
@@ -84,5 +99,20 @@ public class GameManager : MonoBehaviour
         }
         isAction = true;
         talkIndex++;
+    }
+
+    public void GameSave()
+    {
+
+    }
+
+    public void GameLoad()
+    {
+
+    }
+
+    public void GameExit()
+    {
+        Application.Quit();
     }
 }
