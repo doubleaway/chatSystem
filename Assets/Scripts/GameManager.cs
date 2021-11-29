@@ -21,9 +21,11 @@ public class GameManager : MonoBehaviour
     //텍스트 관련
     public TypeEffect talk;
     public Text questTalk;
-
+    public GameObject player;
     void Start()
     {
+        
+        GameLoad();
         questTalk.text = questManager.CheckQuest();
     }
 
@@ -104,11 +106,31 @@ public class GameManager : MonoBehaviour
     public void GameSave()
     {
 
+        //player
+        PlayerPrefs.SetFloat("PlyaerX",player.transform.position.x);
+        PlayerPrefs.SetFloat("PlyaerY",player.transform.position.y);
+        PlayerPrefs.SetFloat("QustId", questManager.questId);
+        PlayerPrefs.SetFloat("QustActionIndex", questManager.questActionIndex);
+        PlayerPrefs.Save();
+
+        menuSet.SetActive(false);
+      
     }
 
-    public void GameLoad()
+    public void GameLoad ()
     {
+        if (!PlayerPrefs.HasKey("PlayerX"))
+            return;
 
+        float x = PlayerPrefs.GetFloat("PlayerX");
+        float y = PlayerPrefs.GetFloat("PlayerY");
+        int questId = PlayerPrefs.GetInt("QustId");
+        int questActionIndex = PlayerPrefs.GetInt("QustActionIndex");
+
+        player.transform.position = new Vector3(x, y, 0);
+        questManager.questId = questId;
+        questManager.questActionIndex = questActionIndex;
+        Debug.Log("들어오나 보자");
     }
 
     public void GameExit()
